@@ -89,7 +89,7 @@ def select_device(device='', batch_size=None):
 def time_synchronized():
     # pytorch-accurate time
     if torch.cuda.is_available():
-        torch.cuda.synchronize()
+        torch.cuda.synchronize() #when other GPU is busy, this code will have problem
     return time.time()
 
 

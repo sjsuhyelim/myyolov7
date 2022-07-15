@@ -1,0 +1,8 @@
+path: /data/cmpe249-fa22/waymotrain200cocoyolo  # dataset root dir
+train: /data/cmpe249-fa22/waymotrain200cocoyolo/images_train.txt  # train images (relative to 'path') 118287 images
+val: /data/cmpe249-fa22/waymotrain200cocoyolo/images_val.txt  # train images (relative to 'path') 5000 images
+test: /data/cmpe249-fa22/waymotrain200cocoyolo/images_test.txt  # 20288 of 40670 images, submit to https://competitions.codalab.org/competitions/20794
+
+# Classes
+nc: 4  # number of classes
+names: ['vehicle', 'pedestrian', 'sign', 'cyclist']  # class names
