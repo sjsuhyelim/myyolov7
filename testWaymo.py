@@ -289,7 +289,7 @@ def test(data,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/010796032/MyRepo/modelzoo/waymoyolov7trained/waymoyolov7epoch99.pt', help='model.pt path(s)')
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/010796032/MyRepo/modelzoo/waymoyolov7trained/yolov5s.pt', help='model.pt path(s)')
     parser.add_argument('--data', type=str, default='data/waymococohpc.yaml', help='*.data path,mycocohpc.yaml, waymococohpc.yaml')
     parser.add_argument('--batch-size', type=int, default=32, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
