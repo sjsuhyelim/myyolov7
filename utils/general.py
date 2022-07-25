@@ -35,6 +35,74 @@ def set_logging(rank=-1):
         format="%(message)s",
         level=logging.INFO if rank in [-1, 0] else logging.WARN)
 
+#new add from yolov5
+set_logging()  # run before defining LOGGER
+LOGGER = logging.getLogger("myyolov7")  # define globally (used in train.py, val.py, detect.py, etc.)
+
+def check_python(minimum='3.7.0'):
+    # Check current python version vs. required python version
+    check_version(platform.python_version(), minimum, name='Python ', hard=True)
+
+import pkg_resources as pkg
+def check_version(current='0.0.0', minimum='0.0.0', name='version ', pinned=False, hard=False, verbose=False):
+    # Check version vs. required version
+    current, minimum = (pkg.parse_version(x) for x in (current, minimum))
+    result = (current == minimum) if pinned else (current >= minimum)  # bool
+    s = f'{name}{minimum} required by YOLOv5, but {name}{current} is currently installed'  # string
+    if hard:
+        assert result, s  # assert min requirements met
+    if verbose and not result:
+        LOGGER.warning(s)
+    return result
+
+def file_size(path):
+    # Return file/dir size (MB)
+    mb = 1 << 20  # bytes to MiB (1024 ** 2)
+    path = Path(path)
+    if path.is_file():
+        return path.stat().st_size / mb
+    elif path.is_dir():
+        return sum(f.stat().st_size for f in path.glob('**/*') if f.is_file()) / mb
+    else:
+        return 0.0
+
+def check_online():
+    # Check internet connectivity
+    import socket
+    try:
+        socket.create_connection(("1.1.1.1", 443), 5)  # check host accessibility
+        return True
+    except OSError:
+        return False
+
+from typing import Optional
+import inspect
+def print_args(args: Optional[dict] = None, show_file=True, show_fcn=False):
+    # Print function arguments (optional args dict)
+    x = inspect.currentframe().f_back  # previous frame
+    file, _, fcn, _, _ = inspect.getframeinfo(x)
+    if args is None:  # get args automatically
+        args, _, _, frm = inspect.getargvalues(x)
+        args = {k: v for k, v in frm.items() if k in args}
+    s = (f'{Path(file).stem}: ' if show_file else '') + (f'{fcn}: ' if show_fcn else '')
+    LOGGER.info(colorstr(s) + ', '.join(f'{k}={v}' for k, v in args.items()))
+
+import urllib
+def url2file(url):
+    # Convert URL to filename, i.e. https://url.com/file.txt?auth -> file.txt
+    url = str(Path(url)).replace(':/', '://')  # Pathlib turns :// -> :/
+    return Path(urllib.parse.unquote(url)).name.split('?')[0]  # '%2F' to '/', split https://url.com/file.txt?auth
+
+def check_suffix(file='yolov5s.pt', suffix=('.pt',), msg=''):
+    # Check file(s) for acceptable suffix
+    if file and suffix:
+        if isinstance(suffix, str):
+            suffix = [suffix]
+        for f in file if isinstance(file, (list, tuple)) else [file]:
+            s = Path(f).suffix.lower()  # file suffix
+            if len(s):
+                assert s in suffix, f"{msg}{f} acceptable suffix is {suffix}"
+#-----
 
 def init_seeds(seed=0):
     # Initialize random number generator (RNG) seeds
@@ -127,6 +195,17 @@ def check_img_size(img_size, s=32):
         print('WARNING: --img-size %g must be multiple of max stride %g, updating to %g' % (img_size, s, new_size))
     return new_size
 
+#new add based on https://github.com/ultralytics/yolov5/blob/master/utils/general.py
+def check_img_size(imgsz, s=32, floor=0):
+    # Verify image size is a multiple of stride s in each dimension
+    if isinstance(imgsz, int):  # integer i.e. img_size=640
+        new_size = max(make_divisible(imgsz, int(s)), floor)
+    else:  # list i.e. img_size=[640, 480]
+        imgsz = list(imgsz)  # convert to list if tuple
+        new_size = [max(make_divisible(x, int(s)), floor) for x in imgsz]
+    if new_size != imgsz:
+        LOGGER.warning(f'WARNING: --img-size {imgsz} must be multiple of max stride {s}, updating to {new_size}')
+    return new_size
 
 def check_imshow():
     # Check if environment supports image displays
