@@ -2,15 +2,20 @@
 
 Implementation of paper - [YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors](https://arxiv.org/abs/2207.02696)
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/yolov7-trainable-bag-of-freebies-sets-new/real-time-object-detection-on-coco)](https://paperswithcode.com/sota/real-time-object-detection-on-coco?p=yolov7-trainable-bag-of-freebies-sets-new)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/akhaliq/yolov7)
+<a href="https://colab.research.google.com/gist/AlexeyAB/b769f5795e65fdab80086f6cb7940dae/yolov7detection.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+[![arxiv.org](http://img.shields.io/badge/cs.CV-arXiv%3A2207.02696-B31B1B.svg)](https://arxiv.org/abs/2207.02696)
+
 <div align="center">
     <a href="./">
-        <img src="./figure/performance.png" width="59%"/>
+        <img src="./figure/performance.png" width="79%"/>
     </a>
 </div>
 
 ## Web Demo
 
-- Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces/akhaliq/yolov7) using [Gradio](https://github.com/gradio-app/gradio). Try out the Web Demo [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/akhaliq/yolov7)
+- Integrated into [Huggingface Spaces 🤗](https://huggingface.co/spaces/akhaliq/yolov7) using Gradio. Try out the Web Demo [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/akhaliq/yolov7)
 
 ## Performance 
 
@@ -31,7 +36,7 @@ MS COCO
 Docker environment (recommended)
 <details><summary> <b>Expand</b> </summary>
 
-``` bash
+``` shell
 # create the docker container, you can change the share memory size if you have more.
 nvidia-docker run --name yolov7 -it -v your_coco_path/:/coco/ -v your_code_path/:/yolov7 --shm-size=64g nvcr.io/nvidia/pytorch:21.08-py3
 
@@ -52,7 +57,7 @@ cd /yolov7
 
 [`yolov7.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt) [`yolov7x.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7x.pt) [`yolov7-w6.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6.pt) [`yolov7-e6.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6.pt) [`yolov7-d6.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-d6.pt) [`yolov7-e6e.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e.pt)
 
-``` bash
+``` shell
 python test.py --data data/coco.yaml --img 640 --batch 32 --conf 0.001 --iou 0.65 --device 0 --weights yolov7.pt --name yolov7_640_val
 ```
 
@@ -79,7 +84,7 @@ To measure accuracy, download [COCO-annotations for Pycocotools](http://images.c
 
 Data preparation
 
-``` bash
+``` shell
 bash scripts/get_coco.sh
 ```
 
@@ -87,7 +92,7 @@ bash scripts/get_coco.sh
 
 Single GPU training
 
-``` bash
+``` shell
 # train p5 models
 python train.py --workers 8 --device 0 --batch-size 32 --data data/coco.yaml --img 640 640 --cfg cfg/training/yolov7.yaml --weights '' --name yolov7 --hyp data/hyp.scratch.p5.yaml
 
@@ -97,7 +102,7 @@ python train_aux.py --workers 8 --device 0 --batch-size 16 --data data/coco.yaml
 
 Multiple GPU training
 
-``` bash
+``` shell
 # train p5 models
 python -m torch.distributed.launch --nproc_per_node 4 --master_port 9527 train.py --workers 8 --device 0,1,2,3 --sync-bn --batch-size 128 --data data/coco.yaml --img 640 640 --cfg cfg/training/yolov7.yaml --weights '' --name yolov7 --hyp data/hyp.scratch.p5.yaml
 
@@ -105,21 +110,84 @@ python -m torch.distributed.launch --nproc_per_node 4 --master_port 9527 train.p
 python -m torch.distributed.launch --nproc_per_node 8 --master_port 9527 train_aux.py --workers 8 --device 0,1,2,3,4,5,6,7 --sync-bn --batch-size 128 --data data/coco.yaml --img 1280 1280 --cfg cfg/training/yolov7-w6.yaml --weights '' --name yolov7-w6 --hyp data/hyp.scratch.p6.yaml
 ```
 
+## Transfer learning
+
+[`yolov7_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7_training.pt) [`yolov7x_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7x_training.pt) [`yolov7-w6_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6_training.pt) [`yolov7-e6_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6_training.pt) [`yolov7-d6_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-d6_training.pt) [`yolov7-e6e_training.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-e6e_training.pt)
+
+Single GPU finetuning for custom dataset
+
+``` shell
+# finetune p5 models
+python train.py --workers 8 --device 0 --batch-size 32 --data data/custom.yaml --img 640 640 --cfg cfg/training/yolov7-custom.yaml --weights 'yolov7_training.pt' --name yolov7-custom --hyp data/hyp.scratch.custom.yaml
+
+# finetune p6 models
+python train_aux.py --workers 8 --device 0 --batch-size 16 --data data/custom.yaml --img 1280 1280 --cfg cfg/training/yolov7-w6-custom.yaml --weights 'yolov7-w6_training.pt' --name yolov7-w6-custom --hyp data/hyp.scratch.custom.yaml
+```
+
 ## Re-parameterization
 
 See [reparameterization.ipynb](tools/reparameterization.ipynb)
 
+## Pose estimation
+
+[`yolov7-w6-pose.pt`](https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-w6-pose.pt)
+
+See [keypoint.ipynb](https://github.com/WongKinYiu/yolov7/blob/main/tools/keypoint.ipynb).
+
 ## Inference
 
-``` bash
+On video:
+``` shell
+python detect.py --weights yolov7.pt --conf 0.25 --img-size 640 --source yourvideo.mp4
+```
+
+On image:
+``` shell
 python detect.py --weights yolov7.pt --conf 0.25 --img-size 640 --source inference/images/horses.jpg
 ```
 
 <div align="center">
     <a href="./">
-        <img src="./figure/horses_prediction.jpg" width="49%"/>
+        <img src="./figure/horses_prediction.jpg" width="59%"/>
     </a>
 </div>
+
+
+## Export
+
+
+**Pytorch to ONNX with NMS (and inference)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7onnx.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+```shell
+python export.py --weights yolov7-tiny.pt --grid --end2end --simplify \
+        --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640 --max-wh 640
+```
+
+**Pytorch to TensorRT with NMS (and inference)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7trt.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
+
+```shell
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt
+python export.py --weights ./yolov7-tiny.pt --grid --end2end --simplify --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640
+git clone https://github.com/Linaom1214/tensorrt-python.git
+python ./tensorrt-python/export.py -o yolov7-tiny.onnx -e yolov7-tiny-nms.trt -p fp16
+```
+
+**Pytorch to TensorRT another way** <a href="https://colab.research.google.com/gist/AlexeyAB/fcb47ae544cf284eb24d8ad8e880d45c/yolov7trtlinaom.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a> <details><summary> <b>Expand</b> </summary>
+
+
+```shell
+wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt
+python export.py --weights yolov7-tiny.pt --grid --include-nms
+git clone https://github.com/Linaom1214/tensorrt-python.git
+python ./tensorrt-python/export.py -o yolov7-tiny.onnx -e yolov7-tiny-nms.trt -p fp16
+
+# Or use trtexec to convert ONNX to TensorRT engine
+/usr/src/tensorrt/bin/trtexec --onnx=yolov7-tiny.onnx --saveEngine=yolov7-tiny-nms.trt --fp16
+```
+
+</details>
+
+Tested with: Python 3.7.13, Pytorch 1.12.0+cu113
+
 
 ## Citation
 
@@ -145,6 +213,7 @@ Yolov7-mask & YOLOv7-pose
     </a>
 </div>
 
+
 ## Acknowledgements
 
 <details><summary> <b>Expand</b> </summary>
@@ -158,5 +227,6 @@ Yolov7-mask & YOLOv7-pose
 * [https://github.com/ultralytics/yolov5](https://github.com/ultralytics/yolov5)
 * [https://github.com/DingXiaoH/RepVGG](https://github.com/DingXiaoH/RepVGG)
 * [https://github.com/JUGGHM/OREPA_CVPR2022](https://github.com/JUGGHM/OREPA_CVPR2022)
+* [https://github.com/TexasInstruments/edgeai-yolov5/tree/yolo-pose](https://github.com/TexasInstruments/edgeai-yolov5/tree/yolo-pose)
 
 </details>
