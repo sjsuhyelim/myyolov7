@@ -1,3 +1,9 @@
+# My fork of the official YOLOv7
+* Added YOLOv5 models and perform comparison
+* Perform WaymoCOCO training
+* Added "multi" folder to support multibackend inference
+
+
 # Official YOLOv7
 
 Implementation of paper - [YOLOv7: Trainable bag-of-freebies sets new state-of-the-art for real-time object detectors](https://arxiv.org/abs/2207.02696)
