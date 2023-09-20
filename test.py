@@ -51,7 +51,8 @@ def test(data,
     else:  # called directly
         set_logging()
         # device = select_device(opt.device, batch_size=batch_size)
-        device = torch.device("cuda:1")
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # device = torch.device("cuda:0")
 
         # Directories
         save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
@@ -289,7 +290,7 @@ def test(data,
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='test.py')
-    parser.add_argument('--weights', nargs='+', type=str, default='/home/010796032/MyRepo/modelzoo/waymoyolov7trained/waymoyolov7epoch99.pt', help='model.pt path(s)')
+    parser.add_argument('--weights', nargs='+', type=str, default='/home/015957045/cmpe249/models/yolov7.pt', help='model.pt path(s)')
     parser.add_argument('--data', type=str, default='data/mycocohpc.yaml', help='*.data path,mycocohpc.yaml, waymococohpc.yaml')
     parser.add_argument('--batch-size', type=int, default=32, help='size of each image batch')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')

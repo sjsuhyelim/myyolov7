@@ -518,8 +518,10 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         x['hash'] = get_hash(self.label_files + self.img_files)
         x['results'] = nf, nm, ne, nc, i + 1
         x['version'] = 0.1  # cache version
-        torch.save(x, path)  # save for next time
+        print(f'the path for saving: ', path)
+        torch.save(x, path)  # save for next time 
         logging.info(f'{prefix}New cache created: {path}')
+        print('no logging info???????')
         return x
 
     def __len__(self):
