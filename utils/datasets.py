@@ -388,6 +388,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         # Check cache
         self.label_files = img2label_paths(self.img_files)  # labels
         cache_path = (p if p.is_file() else Path(self.label_files[0]).parent).with_suffix('.cache')  # cached labels
+
         if cache_path.is_file():
             cache, exists = torch.load(cache_path), True  # load
             #if cache['hash'] != get_hash(self.label_files + self.img_files) or 'version' not in cache:  # changed
@@ -447,6 +448,7 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
 
         # Cache images into memory for faster training (WARNING: large datasets may exceed system RAM)
         self.imgs = [None] * n
+
         if cache_images:
             if cache_images == 'disk':
                 self.im_cache_dir = Path(Path(self.img_files[0]).parent.as_posix() + '_npy')
@@ -521,7 +523,6 @@ class LoadImagesAndLabels(Dataset):  # for training/testing
         print(f'the path for saving: ', path)
         torch.save(x, path)  # save for next time 
         logging.info(f'{prefix}New cache created: {path}')
-        print('no logging info???????')
         return x
 
     def __len__(self):
